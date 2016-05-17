@@ -1,23 +1,11 @@
-######################################################################
-# ScriptName addVirtualHostPort                                      #
-# Usage      Add webserver port to virtualhost.                      #
-# Create     2015-5-5                                                #
-# Modify     2015-5-5                                                #
-# Version    1.0                                                     #
-#                                                                    #
-######################################################################
-
-import os
-lineSep = os.linesep
-
 portList=[]
 cellName = AdminControl.getCell()
-nodes=AdminTask.listNodes().split(lineSep)
+nodes=AdminTask.listNodes().split('\n')
 for node in nodes:
  if(node.find('WEB')>=0):
   print node
   webId=AdminConfig.getid('/Cell:'+cellName+'/Node:'+node+'/')
-  webs=AdminConfig.list('NamedEndPoint',webId).split(lineSep)
+  webs=AdminConfig.list('NamedEndPoint',webId).split('\n')
   for web in webs:
    oldPort=AdminConfig.showAttribute(AdminConfig.showAttribute(web,'endPoint'),'port')
    if(len(oldPort)<=3):
