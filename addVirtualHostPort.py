@@ -8,36 +8,36 @@
 ######################################################################
 
 import os
+
 lineSep = os.linesep
 
-portList=[]
+portList = []
 cellName = AdminControl.getCell()
-nodes=AdminTask.listNodes().split(lineSep)
+nodes = AdminTask.listNodes().split(lineSep)
 for node in nodes:
- if(node.find('WEB')>=0):
-  print node
-  webId=AdminConfig.getid('/Cell:'+cellName+'/Node:'+node+'/')
-  webs=AdminConfig.list('NamedEndPoint',webId).split(lineSep)
-  for web in webs:
-   oldPort=AdminConfig.showAttribute(AdminConfig.showAttribute(web,'endPoint'),'port')
-   if(len(oldPort)<=3):
-    if(len(oldPort)==2):
-     newPort="10"+oldPort
-    if(len(oldPort)==3):
-     newPort="1"+oldPort
-    if(portList.count(newPort)==0):
-     portList.append(newPort)
-    AdminConfig.modify(AdminConfig.showAttribute(web,'endPoint'),'[[port \"' + newPort + '\"]]')
-    print oldPort +" modify to "+ newPort + " ok."
+    if (node.find('WEB') >= 0):
+        print node
+        webId = AdminConfig.getid('/Cell:' + cellName + '/Node:' + node + '/')
+        webs = AdminConfig.list('NamedEndPoint', webId).split(lineSep)
+        for web in webs:
+            oldPort = AdminConfig.showAttribute(AdminConfig.showAttribute(web, 'endPoint'), 'port')
+            if (len(oldPort) <= 3):
+                if (len(oldPort) == 2):
+                    newPort = "10" + oldPort
+                if (len(oldPort) == 3):
+                    newPort = "1" + oldPort
+                if (portList.count(newPort) == 0):
+                    portList.append(newPort)
+                AdminConfig.modify(AdminConfig.showAttribute(web, 'endPoint'), '[[port \"' + newPort + '\"]]')
+                print oldPort + " modify to " + newPort + " ok."
 
 for port in portList:
- try:
-  AdminConfig.create('HostAlias',AdminConfig.getid('/Cell:'+cellName+'/VirtualHost:default_host/'),'[[hostname \"*\"][port \"'+port+'\"]]')
-  print port + " has added to VirtaulHost."
- except:
-  print port + " add to VirtualHost error."
+    try:
+        AdminConfig.create('HostAlias', AdminConfig.getid('/Cell:' + cellName + '/VirtualHost:default_host/'),
+                           '[[hostname \"*\"][port \"' + port + '\"]]')
+        print port + " has added to VirtaulHost."
+    except:
+        print port + " add to VirtualHost error."
 
-print "Save the config." 
+print "Save the config."
 AdminConfig.save()
-
-
